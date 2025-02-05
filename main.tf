@@ -77,16 +77,18 @@ resource "aws_security_group" "instance_sg" {
 }
 
 resource "aws_instance" "public_instance" {
-  ami           = var.ami_id
-  instance_type = var.instance_type
-  subnet_id     = aws_subnet.public.id
-  key_name      = var.key_name
-  
+  count          = var.instance_count
+  ami            = var.ami_id
+  instance_type  = var.instance_type
+  subnet_id      = aws_subnet.public.id
+  key_name       = var.key_name
+
   vpc_security_group_ids = [
     aws_security_group.instance_sg.id
   ]
 
   tags = {
-    Name = "ec2-instance"
+    Name = "ec2-instance-${count.index + 1}"
   }
 }
+

@@ -42,6 +42,10 @@ terraform plan
 ```bash
 terraform apply 
 ```
+### Apply no. of instance 
+```
+terraform apply -var="instance_count=3"
+```
 
 ### Destroy the Infrastructure
 ```bash
