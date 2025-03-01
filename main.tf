@@ -85,6 +85,28 @@ resource "aws_instance" "public_instance" {
   vpc_security_group_ids = [
     aws_security_group.instance_sg.id
   ]
+  
+  user_data = <<-EOF
+    #!/bin/bash
+    # Download and extract Go
+    wget https://go.dev/dl/go1.23.4.linux-amd64.tar.gz
+    tar -C /usr/local -xzf go1.23.4.linux-amd64.tar.gz
+
+    # Update apt repositories
+    apt-get update
+
+    # Optionally install vim (if needed)
+    apt-get install -y vim
+
+    # Append environment variables to /etc/profile
+    echo "export PATH=\$PATH:/usr/local/go/bin" >> /etc/profile
+    echo "export GOPATH=\$HOME/go" >> /etc/profile
+    echo "export PATH=\$PATH:\$GOPATH/bin" >> /etc/profile
+    echo "export GO111MODULE=off" >> /etc/profile
+
+    # Source the profile so the variables are available immediately
+    source /etc/profile
+  EOF
 
   tags = {
     Name = "ec2-instance"
